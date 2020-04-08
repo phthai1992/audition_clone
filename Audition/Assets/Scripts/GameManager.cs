@@ -8,6 +8,9 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         Debug.Log("GameManager is START!");
+
+        GameObject player = GameObject.Find("Player2");
+        player.GetComponent<CharacterController>().Dance();
     }
 
     // Update is called once per frame
