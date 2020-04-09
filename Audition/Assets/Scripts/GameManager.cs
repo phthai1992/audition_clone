@@ -11,6 +11,8 @@ public class GameManager : MonoBehaviour
     private bool isPlayerMoveFinished = false;
     private int currentMove = 0;
     private List<int> playerMove;
+    private float startRenderMovesTime;
+    private float renderMovesEffectTime = 2.0f;
     
     void Awake()
     {
@@ -30,6 +32,7 @@ public class GameManager : MonoBehaviour
         if(isRenderMove)
         {
             CheckInputMove();
+            StartRenderMovesEffect();
         }
     }
 
@@ -84,6 +87,18 @@ public class GameManager : MonoBehaviour
                 isPlayerMoveFinished = false;
                 currentMove = 0;
                 playerMove = new List<int>();
+            }
+
+            // Make all move sprites is transparent to fade in
+            startRenderMovesTime = Time.time;
+            GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
+            foreach (GameObject obj in objsCurrentMoves)
+            {
+                obj.GetComponent<SpriteRenderer>().color = new Color(
+                    obj.GetComponent<SpriteRenderer>().color.r,
+                    obj.GetComponent<SpriteRenderer>().color.g,
+                    obj.GetComponent<SpriteRenderer>().color.b,
+                    0);
             }
         }
     }
@@ -169,20 +184,6 @@ public class GameManager : MonoBehaviour
             obj.GetComponent<SpriteRenderer>().enabled = false;
         }
 
-        /*
-        GameObject result = GameObject.Find("Result_Perfect");
-        if(result != null)
-            result.GetComponent<SpriteRenderer>().enabled = false; // Disable Result
-        
-        GameObject[] objs = GameObject.FindGameObjectsWithTag("OldMoves");
-        foreach (GameObject obj in objs)
-        {
-            // Remove old moves after delayTime
-            //obj.gameObject.SetActive(false); 
-            //obj.gameObject.Kill();
-        }
-        */
-
         // After delayTime -> make new Move
         GetMove();
         RenderMove();
@@ -190,6 +191,23 @@ public class GameManager : MonoBehaviour
         // Set Player animation to Idle
         GameObject player = GameObject.Find("Player2");
         player.GetComponent<CharacterController>().Idle();
+    }
+
+    void StartRenderMovesEffect()
+    {
+        float effectTime = renderMovesEffectTime; //2 seconds to fade in
+        if((Time.time - startRenderMovesTime) <= effectTime)
+        {
+            GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
+            foreach (GameObject obj in objsCurrentMoves)
+            {
+                obj.GetComponent<SpriteRenderer>().color = new Color(
+                    obj.GetComponent<SpriteRenderer>().color.r,
+                    obj.GetComponent<SpriteRenderer>().color.g,
+                    obj.GetComponent<SpriteRenderer>().color.b,
+                    Mathf.Lerp(0, 1.0f, (Time.time - startRenderMovesTime) /effectTime));
+            }
+        }
     }
 
     void DisplayResult(int score)
