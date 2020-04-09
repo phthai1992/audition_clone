@@ -21,9 +21,6 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("GameManager is START!");
 
-        //GameObject player = GameObject.Find("Player2");
-        //player.GetComponent<CharacterController>().Dance();
-
         StartGame();
     }
 
@@ -189,6 +186,10 @@ public class GameManager : MonoBehaviour
         // After delayTime -> make new Move
         GetMove();
         RenderMove();
+
+        // Set Player animation to Idle
+        GameObject player = GameObject.Find("Player2");
+        player.GetComponent<CharacterController>().Idle();
     }
 
     void DisplayResult(int score)
