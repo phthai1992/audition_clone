@@ -199,13 +199,15 @@ public class GameManager : MonoBehaviour
         if((Time.time - startRenderMovesTime) <= effectTime)
         {
             GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
+            int idx = 0;
             foreach (GameObject obj in objsCurrentMoves)
             {
                 obj.GetComponent<SpriteRenderer>().color = new Color(
                     obj.GetComponent<SpriteRenderer>().color.r,
                     obj.GetComponent<SpriteRenderer>().color.g,
                     obj.GetComponent<SpriteRenderer>().color.b,
-                    Mathf.Lerp(0, 1.0f, (Time.time - startRenderMovesTime) /effectTime));
+                    Mathf.Lerp(0, 1.0f, (Time.time - (startRenderMovesTime + (float)idx * 0.15f)) / effectTime));
+                idx++;
             }
         }
     }
