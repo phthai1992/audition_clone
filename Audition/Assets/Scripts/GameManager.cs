@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
     private float startRenderMovesTime;
     private float renderMovesEffectTime = 2.0f;
     
+    public GameObject moveBackgroundGood;
+    public GameObject moveBackgroundBad;
     void Awake()
     {
         instance = this;
@@ -99,6 +101,12 @@ public class GameManager : MonoBehaviour
                     obj.GetComponent<SpriteRenderer>().color.g,
                     obj.GetComponent<SpriteRenderer>().color.b,
                     0);
+
+                // Remove old BG moves
+                if((obj.transform.childCount > 0) && obj.transform.GetChild(0) != null)
+                {
+                    Destroy(obj.transform.GetChild(0).gameObject);
+                }
             }
         }
     }
@@ -112,24 +120,28 @@ public class GameManager : MonoBehaviour
             {
                 //Debug.Log("PressUp");
                 playerMove.Add((int)Direction.Up);
+                SpawnMoveBG(currentMove);
                 currentMove++;
             }
             else if(Input.GetKeyUp(KeyCode.DownArrow))
             {
                 //Debug.Log("PressDown");
                 playerMove.Add((int)Direction.Down);
+                SpawnMoveBG(currentMove);
                 currentMove++;
             }
             else if(Input.GetKeyUp(KeyCode.LeftArrow))
             {
                 //Debug.Log("PressLeft");
                 playerMove.Add((int)Direction.Left);
+                SpawnMoveBG(currentMove);
                 currentMove++;
             }
             else if(Input.GetKeyUp(KeyCode.RightArrow))
             {
                 //Debug.Log("PressRight");
                 playerMove.Add((int)Direction.Right);
+                SpawnMoveBG(currentMove);
                 currentMove++;
             }
         }
@@ -324,5 +336,33 @@ public class GameManager : MonoBehaviour
             arrow.tag = "CurrentMoves";
             arrow.SetActive(true);
         } 
+    }
+
+    void SpawnMoveBG(int current)
+    {
+        List<int> move = GenerateMove.instance.GetMove();
+        GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
+        int idx = 0;
+        foreach (GameObject obj in objsCurrentMoves)
+        {
+            if(idx++ != current)
+                continue;
+            if(playerMove[current] == move[current])
+            {
+                GameObject spawnInstance = Instantiate(moveBackgroundGood);
+                spawnInstance.transform.SetParent(obj.transform);
+                spawnInstance.transform.position = obj.transform.position;
+                spawnInstance.GetComponent<SpriteRenderer>().enabled = true;
+                spawnInstance.SetActive(true); 
+            }
+            else
+            {
+                GameObject spawnInstance = Instantiate(moveBackgroundBad);
+                spawnInstance.transform.SetParent(obj.transform);
+                spawnInstance.transform.position = obj.transform.position;
+                spawnInstance.GetComponent<SpriteRenderer>().enabled = true;
+                spawnInstance.SetActive(true); 
+            }
+        }
     }
 }

@@ -23,21 +23,21 @@ public class CharacterController : MonoBehaviour
 
     public void Idle()
     {
-        Debug.Log("CharacterController: Idle");
+        //Debug.Log("CharacterController: Idle");
         state = 0;
         SetAnimation(state);
     }
 
     public void Dance()
     {
-        Debug.Log("CharacterController: Dance");
+        //Debug.Log("CharacterController: Dance");
         state = 1;
         SetAnimation(state);
     }
 
     public void Walk()
     {
-        Debug.Log("CharacterController: Walk");
+        //Debug.Log("CharacterController: Walk");
         state = 2;
         SetAnimation(state);
     }
