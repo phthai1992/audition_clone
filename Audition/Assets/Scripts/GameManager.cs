@@ -33,16 +33,6 @@ public class GameManager : MonoBehaviour
         if(isRenderMove)
         {
             CheckInputMove();
-
-            if(isPlayerMoveFinished)
-            {
-                // Show text result
-                GameObject result = GameObject.Find("Result_Perfect");
-                if(result != null)
-                {
-                    result.GetComponent<SpriteRenderer>().enabled = true;
-                }
-            }
         }
     }
 
@@ -148,14 +138,16 @@ public class GameManager : MonoBehaviour
                 }
                 isPlayerMoveFinished = true;
 
-                Debug.Log("PlayerMove: " + playerMoveList + " Result score: " + (((float)match / move.Count) * 100));
+                int score = (int)(((float)match / move.Count) * 100);
+                Debug.Log("PlayerMove: " + playerMoveList + " Result score: " + score);
+                DisplayResult(score);
 
                 // Make player start to dance
                 GameObject player = GameObject.Find("Player2");
                 player.GetComponent<CharacterController>().Dance();
 
-                // Make a coroutine to start new move after 3 second
-                IEnumerator coroutine = StartNewMove(3.0f);
+                // Make a coroutine to start new move after 2 seconds
+                IEnumerator coroutine = StartNewMove(2.0f);
                 StartCoroutine(coroutine);        
             }
         }
@@ -174,11 +166,17 @@ public class GameManager : MonoBehaviour
         yield return new WaitForSeconds(delayTime);
 
         // After delayTime -> reset game
+        GameObject[] objsResultMoves = GameObject.FindGameObjectsWithTag("ResultMoves");
+        foreach (GameObject obj in objsResultMoves)
+        {
+            obj.GetComponent<SpriteRenderer>().enabled = false;
+        }
+
+        /*
         GameObject result = GameObject.Find("Result_Perfect");
         if(result != null)
             result.GetComponent<SpriteRenderer>().enabled = false; // Disable Result
         
-        /*
         GameObject[] objs = GameObject.FindGameObjectsWithTag("OldMoves");
         foreach (GameObject obj in objs)
         {
@@ -191,6 +189,59 @@ public class GameManager : MonoBehaviour
         // After delayTime -> make new Move
         GetMove();
         RenderMove();
+    }
+
+    void DisplayResult(int score)
+    {
+        if(score > 80)
+        {
+            GameObject result = GameObject.Find("Result_Perfect");
+            if(result != null)
+                result.GetComponent<SpriteRenderer>().enabled = true;
+        }
+        else if(score > 60)
+        {
+            GameObject result = GameObject.Find("Result_Good");
+            if(result != null)
+            {
+                result.GetComponent<SpriteRenderer>().enabled = true;
+                result.GetComponent<Animator>().Rebind();
+                result.GetComponent<Animator>().Play("good");
+            }
+        }
+        else if(score > 40)
+        {
+            GameObject result = GameObject.Find("Result_Cool");
+            if(result != null)
+            if(result != null)
+            {
+                result.GetComponent<SpriteRenderer>().enabled = true;
+                result.GetComponent<Animator>().Rebind();
+                result.GetComponent<Animator>().Play("good");
+            }
+        }
+        else if(score > 20)
+        {
+            GameObject result = GameObject.Find("Result_Bad");
+            if(result != null)
+            if(result != null)
+            {
+                result.GetComponent<SpriteRenderer>().enabled = true;
+                result.GetComponent<Animator>().Rebind();
+                result.GetComponent<Animator>().Play("good");
+            }
+        }
+        else
+        {
+            GameObject result = GameObject.Find("Result_Miss");
+            if(result != null)
+            if(result != null)
+            {
+                result.GetComponent<SpriteRenderer>().enabled = true;
+                result.GetComponent<Animator>().Rebind();
+                result.GetComponent<Animator>().Play("good");
+            }
+        }
     }
 
     string ConvertMoveFromInt(int move)
