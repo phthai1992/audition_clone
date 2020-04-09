@@ -912,8 +912,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 901237897}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.49, z: 10}
-  m_LocalScale: {x: 46, y: 24, z: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 10}
+  m_LocalScale: {x: 46, y: 25, z: 1}
   m_Children: []
   m_Father: {fileID: 738784441}
   m_RootOrder: 0
@@ -1495,7 +1495,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefabArrowSprite: {fileID: 6238242856456659314, guid: 637db8464fa851e43ae09261f22e2e5c,
     type: 3}
-  moveBackgroundNormal: {fileID: 0}
   moveBackgroundGood: {fileID: 1852773371}
   moveBackgroundBad: {fileID: 1229120043}
 --- !u!4 &1826988661

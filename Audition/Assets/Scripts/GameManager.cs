@@ -179,6 +179,8 @@ public class GameManager : MonoBehaviour
 
     IEnumerator StartNewMove(float delayTime)
     {
+        yield return new WaitForSeconds(delayTime / 2);
+
         GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
         foreach (GameObject obj in objsCurrentMoves)
         {
