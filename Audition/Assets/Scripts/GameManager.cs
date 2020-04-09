@@ -149,8 +149,48 @@ public class GameManager : MonoBehaviour
                 isPlayerMoveFinished = true;
 
                 Debug.Log("PlayerMove: " + playerMoveList + " Result score: " + (((float)match / move.Count) * 100));
+
+                // Make player start to dance
+                GameObject player = GameObject.Find("Player2");
+                player.GetComponent<CharacterController>().Dance();
+
+                // Make a coroutine to start new move after 3 second
+                IEnumerator coroutine = StartNewMove(3.0f);
+                StartCoroutine(coroutine);        
             }
         }
+    }
+
+    IEnumerator StartNewMove(float delayTime)
+    {
+        GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
+        foreach (GameObject obj in objsCurrentMoves)
+        {
+            //obj.gameObject.tag = "OldMoves";
+            obj.gameObject.SetActive(false); 
+            obj.gameObject.Kill();
+        }
+
+        yield return new WaitForSeconds(delayTime);
+
+        // After delayTime -> reset game
+        GameObject result = GameObject.Find("Result_Perfect");
+        if(result != null)
+            result.GetComponent<SpriteRenderer>().enabled = false; // Disable Result
+        
+        /*
+        GameObject[] objs = GameObject.FindGameObjectsWithTag("OldMoves");
+        foreach (GameObject obj in objs)
+        {
+            // Remove old moves after delayTime
+            //obj.gameObject.SetActive(false); 
+            //obj.gameObject.Kill();
+        }
+        */
+
+        // After delayTime -> make new Move
+        GetMove();
+        RenderMove();
     }
 
     string ConvertMoveFromInt(int move)
@@ -177,6 +217,7 @@ public class GameManager : MonoBehaviour
         {
             arrow.transform.position = pos;
             arrow.transform.transform.Rotate(new Vector3(0, 0, 90)); 
+            arrow.tag = "CurrentMoves";
             arrow.SetActive(true);
         } 
     }
@@ -187,6 +228,7 @@ public class GameManager : MonoBehaviour
         {
             arrow.transform.position = pos;
             arrow.transform.transform.Rotate(new Vector3(0, 0, -90)); 
+            arrow.tag = "CurrentMoves";
             arrow.SetActive(true);
         } 
     }
@@ -197,6 +239,7 @@ public class GameManager : MonoBehaviour
         {
             arrow.transform.position = pos;
             arrow.transform.transform.Rotate(new Vector3(0, 0, 180));
+            arrow.tag = "CurrentMoves";
             arrow.SetActive(true);
         } 
     }
@@ -206,6 +249,7 @@ public class GameManager : MonoBehaviour
         if (arrow != null)
         {
             arrow.transform.position = pos;
+            arrow.tag = "CurrentMoves";
             arrow.SetActive(true);
         } 
     }
