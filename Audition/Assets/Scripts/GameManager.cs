@@ -6,11 +6,12 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
 
-    public GameObject prefabArrowUp;
-    public GameObject prefabArrowDown;
-    public GameObject prefabArrowLeft;
-    public GameObject prefabArrowRight;
-
+    public GameObject prefabArrowSprite;
+    private bool isRenderMove = false;
+    private bool isPlayerMoveFinished = false;
+    private int currentMove = 0;
+    private List<int> playerMove;
+    
     void Awake()
     {
         instance = this;
@@ -29,7 +30,20 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(isRenderMove)
+        {
+            CheckInputMove();
+
+            if(isPlayerMoveFinished)
+            {
+                // Show text result
+                GameObject result = GameObject.Find("Result_Perfect");
+                if(result != null)
+                {
+                    result.GetComponent<SpriteRenderer>().enabled = true;
+                }
+            }
+        }
     }
 
     public void StartGame()
@@ -63,37 +77,94 @@ public class GameManager : MonoBehaviour
                 float y = positionMove.position.y;
                 float z = positionMove.position.z;
                 Vector3 position = new Vector3(x, y, z);
-                switch(move[i])
+                Direction dir = (Direction)move[i];
+                switch(dir)
                 {
-                    case 1:
+                    case Direction.Up:
                         SpawnArrowUp(position);
                         break;
-                    case 2:
+                    case Direction.Down:
                         SpawnArrowDown(position);
                         break;
-                    case 3:
+                    case Direction.Left:
                         SpawnArrowLeft(position);
                         break;
-                    case 4:
+                    case Direction.Right:
                         SpawnArrowRight(position);
                         break;
                 }
-                
+                isRenderMove = true;
+                isPlayerMoveFinished = false;
+                currentMove = 0;
+                playerMove = new List<int>();
+            }
+        }
+    }
+
+    void CheckInputMove()
+    {
+        List<int> move = GenerateMove.instance.GetMove();
+        if(currentMove < move.Count)
+        {
+            if(Input.GetKeyUp(KeyCode.UpArrow))
+            {
+                //Debug.Log("PressUp");
+                playerMove.Add((int)Direction.Up);
+                currentMove++;
+            }
+            else if(Input.GetKeyUp(KeyCode.DownArrow))
+            {
+                //Debug.Log("PressDown");
+                playerMove.Add((int)Direction.Down);
+                currentMove++;
+            }
+            else if(Input.GetKeyUp(KeyCode.LeftArrow))
+            {
+                //Debug.Log("PressLeft");
+                playerMove.Add((int)Direction.Left);
+                currentMove++;
+            }
+            else if(Input.GetKeyUp(KeyCode.RightArrow))
+            {
+                //Debug.Log("PressRight");
+                playerMove.Add((int)Direction.Right);
+                currentMove++;
+            }
+        }
+
+        if(currentMove >= move.Count)
+        {
+            if(isPlayerMoveFinished == false)
+            {
+                int match = 0;
+                string playerMoveList = "";
+                for(int i = 0; i < playerMove.Count; i++)
+                {
+                    playerMoveList += " " + ConvertMoveFromInt(playerMove[i]);
+                    if(playerMove[i] == move[i])
+                    {
+                        match++;
+                    }
+                }
+                isPlayerMoveFinished = true;
+
+                Debug.Log("PlayerMove: " + playerMoveList + " Result score: " + (((float)match / move.Count) * 100));
             }
         }
     }
 
     string ConvertMoveFromInt(int move)
     {
-        switch(move)
+        Direction dir = (Direction)move;
+        switch(dir)
         {
-            case 1:
+            case Direction.Up:
                 return "Up";
-            case 2:
+            case Direction.Down:
                 return "Down";
-            case 3:
+            case Direction.Left:
                 return "Left";
-            case 4:
+            case Direction.Right:
                 return "Right";
         }
         return "";
@@ -101,7 +172,7 @@ public class GameManager : MonoBehaviour
 
     void SpawnArrowUp(Vector3 pos)
     {
-        GameObject arrow = prefabArrowUp.Spawn();
+        GameObject arrow = prefabArrowSprite.Spawn();
         if (arrow != null)
         {
             arrow.transform.position = pos;
@@ -111,7 +182,7 @@ public class GameManager : MonoBehaviour
     }
     void SpawnArrowDown(Vector3 pos)
     {
-        GameObject arrow = prefabArrowDown.Spawn();
+        GameObject arrow = prefabArrowSprite.Spawn();
         if (arrow != null)
         {
             arrow.transform.position = pos;
@@ -121,7 +192,7 @@ public class GameManager : MonoBehaviour
     }
     void SpawnArrowLeft(Vector3 pos)
     {
-        GameObject arrow = prefabArrowLeft.Spawn();
+        GameObject arrow = prefabArrowSprite.Spawn();
         if (arrow != null)
         {
             arrow.transform.position = pos;
@@ -131,7 +202,7 @@ public class GameManager : MonoBehaviour
     }
     void SpawnArrowRight(Vector3 pos)
     {
-        GameObject arrow = prefabArrowRight.Spawn();
+        GameObject arrow = prefabArrowSprite.Spawn();
         if (arrow != null)
         {
             arrow.transform.position = pos;
