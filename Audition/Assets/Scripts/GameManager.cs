@@ -170,6 +170,14 @@ public class GameManager : MonoBehaviour
                 GameObject player = GameObject.Find("Player2");
                 player.GetComponent<CharacterController>().Dance();
 
+                // Test Control AI
+                AIController.instance.ControlAI(1, Random.Range((int)Animation.Dance, (int)Animation.Walk+1));
+                AIController.instance.ControlAI(2, Random.Range((int)Animation.Dance, (int)Animation.Walk+1));
+
+                // AI Score
+                DisplayAIResult(AIController.instance.GetAIPosition(1), Random.Range(1, 100));
+                DisplayAIResult(AIController.instance.GetAIPosition(2), Random.Range(1, 100));
+
                 // Make a coroutine to start new move after 2 seconds
                 IEnumerator coroutine = StartNewMove(2.0f);
                 StartCoroutine(coroutine);        
@@ -184,7 +192,6 @@ public class GameManager : MonoBehaviour
         GameObject[] objsCurrentMoves = GameObject.FindGameObjectsWithTag("CurrentMoves");
         foreach (GameObject obj in objsCurrentMoves)
         {
-            //obj.gameObject.tag = "OldMoves";
             obj.gameObject.SetActive(false); 
             obj.gameObject.Kill();
         }
@@ -205,6 +212,10 @@ public class GameManager : MonoBehaviour
         // Set Player animation to Idle
         GameObject player = GameObject.Find("Player2");
         player.GetComponent<CharacterController>().Idle();
+
+        // Stop AI animation
+        AIController.instance.ControlAI(1, (int)Animation.Idle);
+        AIController.instance.ControlAI(2, (int)Animation.Idle);
     }
 
     void StartRenderMovesEffect()
@@ -277,6 +288,22 @@ public class GameManager : MonoBehaviour
                 result.GetComponent<Animator>().Play("good");
             }
         }
+    }
+
+    void DisplayAIResult(Vector3 pos, int score)
+    {
+        /*
+        GameObject result = GameObject.Find("Result_Good");
+        if(result != null)
+        {
+            GameObject spawnInstance = Instantiate(result);
+            spawnInstance.transform.SetParent(result.transform);
+            spawnInstance.transform.position = pos;
+            spawnInstance.GetComponent<SpriteRenderer>().enabled = true;
+            spawnInstance.GetComponent<Animator>().Rebind();
+            spawnInstance.GetComponent<Animator>().Play("good");
+        }
+        */
     }
 
     string ConvertMoveFromInt(int move)
